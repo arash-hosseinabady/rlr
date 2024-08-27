@@ -1,0 +1,12 @@
+{
+    "name": "arash/rlr",
+    "description": "rate limit request",
+    "type": "php-library",
+    "authors": [
+        {
+            "name": "Arash Hossein-Abadi",
+            "email": "arash.hosseinabady@gmail.com"
+        }
+    ],
+    "require": {}
+}
