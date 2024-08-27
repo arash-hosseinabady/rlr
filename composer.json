@@ -8,5 +8,8 @@
             "email": "arash.hosseinabady@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": { "arash\\rlr\\": "src/" }
+    }
 }
