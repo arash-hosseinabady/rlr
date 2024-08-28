@@ -5,49 +5,40 @@ namespace arash\rlr;
 use Memcached;
 
 /**
- * @property \Memcached $memcached
+ * @property Memcached $memcached
+ * @property string $host
+ * @property int $port
  */
 class MemcachedHandler extends RLRService implements RLEInterface
 {
-    public $memcached;
-    private $hmemcachHost = '127.0.0.1';
-    private $port = '11211';
+    use RLRTrait;
 
-    public function __construct(private $limit = 10, private $window = 20)
+    public $memcached;
+    private $host = '127.0.0.1';
+    private $port = 11211;
+
+    public function __construct()
     {
-        $this->connect();
-        $this->prepareIdentifier();
     }
 
     public function connect()
     {
-        $this->memcached = new \Memcached();
-        $this->memcached->addServer($this->hmemcachHost, $this->port);
+        if (!$this->memcached) {
+            $this->memcached = new Memcached();
+            $this->memcached->addServer(
+                getenv('MEMCACHED_HOST') ?: $this->host,
+                getenv('MEMCACHED_PORT') ?: $this->port
+            );
+        }
     }
 
-    public function isRateLimited()
+    public function getValue($key)
     {
-        $currentTime = time();
-        $key = $this->getKey();
+        return $this->memcached->get($key) ?: $this->identifier;
+    }
 
-        // Retrieve current request timestamps from Memcached
-        $rateData = $this->memcached->get($key) ?: $this->identifier;
-
-        if (!isset($rateData['count'])) {
-            $rateData['count'] = 0;
-        }
-
-        if (!isset($rateData['time'])) {
-            $rateData['time'] = $currentTime;
-        } else if (($rateData['time'] > ($currentTime - $this->window)) and $rateData['count'] >= $this->limit) {
-            return true;
-        }
-
-        $rateData['count'] += 1;
-
-        // Save the updated data back to Memcached
-        $this->memcached->set($key, $rateData, $this->window);
-
-        return false;
+    public function setValue($key, $value)
+    {
+        $this->memcached->set($key, $value, $this->window);
     }
 }

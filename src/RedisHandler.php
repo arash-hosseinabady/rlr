@@ -2,53 +2,52 @@
 
 namespace arash\rlr;
 
+use Redis;
+use Exception;
+use RedisException;
+
 /**
- * @property \Redis $redis
+ * @property Redis $redis
+ * @property string $host
+ * @property int $port
  */
 class RedisHandler extends RLRService implements RLEInterface
 {
+    use RLRTrait;
+
     public $redis;
     private $host = '127.0.0.1';
     private $port = 6379;
 
-    public function __construct(private $limit = 10, private $window = 20)
+    public function __construct()
     {
-        $this->connect();
-        $this->prepareIdentifier();
     }
 
+    /**
+     * @throws Exception
+     */
     public function connect()
     {
-        $this->redis = new \Redis([
-            'host' => $this->host,
-            'port' => $this->port,
-        ]);
-        $this->redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
+        if (!$this->redis) {
+            $this->redis = new Redis([
+                'host' => getenv('REDIS_HOST') ?: $this->host,
+                'port' => getenv('REDIS_PORT') ?: $this->port,
+            ]);
+        }
+        try {
+            $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_JSON);
+        } catch (RedisException $e) {
+            throw new Exception('Redis connection failed: ' . $e->getMessage());
+        }
     }
 
-    public function isRateLimited()
+    public function getValue($key)
     {
-        $currentTime = time();
-        $key = $this->getKey();
+        return $this->redis->get($key) ?: $this->identifier;
+    }
 
-        // Retrieve current request timestamps from Redis
-        $rateData = $this->redis->get($key) ?: $this->identifier;
-
-        if (!isset($rateData['count'])) {
-            $rateData['count'] = 0;
-        }
-
-        if (!isset($rateData['time'])) {
-            $rateData['time'] = $currentTime;
-        } else if (($rateData['time'] > ($currentTime - $this->window)) and $rateData['count'] >= $this->limit) {
-            return true;
-        }
-
-        $rateData['count'] += 1;
-
-        // Save the updated data back to redis
-        $this->redis->setex($key, $this->window, $rateData);
-
-        return false;
+    public function setValue($key, $value)
+    {
+        $this->redis->setex($key, $this->window, $value);
     }
 }

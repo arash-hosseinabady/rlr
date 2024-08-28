@@ -1,15 +1,21 @@
 {
-    "name": "arash/rlr",
-    "description": "rate limit request",
-    "type": "php-library",
-    "authors": [
-        {
-            "name": "Arash Hossein-Abadi",
-            "email": "arash.hosseinabady@gmail.com"
-        }
-    ],
-    "require": {},
-    "autoload": {
-        "psr-4": { "arash\\rlr\\": "src/" }
+  "name": "arash/rlr",
+  "description": "rate limit request",
+  "type": "php-library",
+  "authors": [
+    {
+      "name": "Arash Hossein-Abadi",
+      "email": "arash.hosseinabady@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "ext-redis": "*",
+    "ext-memcached": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "arash\\rlr\\": "src/"
+    }
+  }
 }
