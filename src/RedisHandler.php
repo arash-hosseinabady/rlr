@@ -4,7 +4,6 @@ namespace arash\rlr;
 
 use Redis;
 use Exception;
-use RedisException;
 
 /**
  * @property Redis $redis
@@ -17,10 +16,13 @@ class RedisHandler extends RLRService implements RLEInterface
 
     public $redis;
     private $host = '127.0.0.1';
-    private $port = 6379;
+    private $port = 63791;
 
     public function __construct()
     {
+        $this->connect();
+
+        $this->prepareIdentifier();
     }
 
     /**
@@ -28,15 +30,16 @@ class RedisHandler extends RLRService implements RLEInterface
      */
     public function connect()
     {
-        if (!$this->redis) {
-            $this->redis = new Redis([
-                'host' => getenv('REDIS_HOST') ?: $this->host,
-                'port' => getenv('REDIS_PORT') ?: $this->port,
-            ]);
-        }
         try {
+            if (!$this->redis) {
+                $this->redis = new Redis([
+                    'host' => getenv('REDIS_HOST') ?: $this->host,
+                    'port' => getenv('REDIS_PORT') ?: $this->port,
+                ]);
+            }
             $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_JSON);
-        } catch (RedisException $e) {
+            $this->redis->ping();
+        } catch (Exception $e) {
             throw new Exception('Redis connection failed: ' . $e->getMessage());
         }
     }

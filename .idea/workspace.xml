@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="418b0efc-7620-453b-92ac-281d8a80e9b3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MemcachedHandler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/MemcachedHandler.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RLRService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/RLRService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RedisHandler.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/RedisHandler.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/rlr.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/rlr.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RLRTrait.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/RLRTrait.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +69,8 @@
       <option name="presentableId" value="Default" />
       <updated>1724753723220</updated>
       <workItem from="1724753724244" duration="10848000" />
-      <workItem from="1724824386209" duration="2881000" />
+      <workItem from="1724824386209" duration="10274000" />
+      <workItem from="1725088298018" duration="9814000" />
     </task>
     <servers />
   </component>

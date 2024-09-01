@@ -19,6 +19,9 @@ class MemcachedHandler extends RLRService implements RLEInterface
 
     public function __construct()
     {
+        $this->connect();
+
+        $this->prepareIdentifier();
     }
 
     public function connect()
@@ -29,6 +32,9 @@ class MemcachedHandler extends RLRService implements RLEInterface
                 getenv('MEMCACHED_HOST') ?: $this->host,
                 getenv('MEMCACHED_PORT') ?: $this->port
             );
+        }
+        if (!$this->memcached->getStats()) {
+            throw new \Exception('Memcached connection failed');
         }
     }
 

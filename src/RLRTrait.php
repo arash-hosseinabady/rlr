@@ -1,6 +1,8 @@
 <?php
 
-namespace Arash\Rlr;
+namespace arash\Rlr;
+
+use yii\base\InvalidConfigException;
 
 /**
  * @property array $identifier
@@ -12,8 +14,12 @@ trait RLRTrait
     protected $identifier;
     public $limit;
     public $window;
+    public $banList = [];
     protected function prepareIdentifier()
     {
+        if ($this->banList && !is_array($this->banList)) {
+            throw new InvalidConfigException('The "banList" property must be an array.');
+        }
         $this->setIp();
         $this->setAgent();
         $this->setUrl();
@@ -68,8 +74,11 @@ trait RLRTrait
         $currentTime = time();
         $key = $this->getKey();
 
-        // Retrieve current request timestamps from Memcached
         $rateData = $this->getValue($key);
+
+        if (in_array($rateData['ip']['true_client_ip'], $this->banList)) {
+            return true;
+        }
 
         if (!isset($rateData['count'])) {
             $rateData['count'] = 0;

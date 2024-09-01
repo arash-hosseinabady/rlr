@@ -3,8 +3,6 @@
 namespace arash\rlr;
 
 use Exception;
-use Memcached;
-use Redis;
 
 /**
  * @property RedisHandler|MemcachedHandler $handler
@@ -30,13 +28,7 @@ class RLRService
             $this->handler = new MemcachedHandler();
         }
 
-        try {
-            $this->handler->connect();
-        } catch (Exception $e) {
-            throw new Exception('Redis connection failed: ' . $e->getMessage());
-        }
         $this->handler->window = $window;
         $this->handler->limit = $limit;
-        $this->handler->prepareIdentifier();
     }
 }
