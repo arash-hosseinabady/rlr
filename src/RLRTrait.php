@@ -2,8 +2,6 @@
 
 namespace arash\Rlr;
 
-use yii\base\InvalidConfigException;
-
 /**
  * @property array $identifier
  * @property int $limit
@@ -14,11 +12,12 @@ trait RLRTrait
     protected $identifier;
     public $limit;
     public $window;
-    public $banList = [];
+    public $banList;
+
     protected function prepareIdentifier()
     {
         if ($this->banList && !is_array($this->banList)) {
-            throw new InvalidConfigException('The "banList" property must be an array.');
+            $this->banList = explode(',', $this->banList);
         }
         $this->setIp();
         $this->setAgent();
@@ -69,6 +68,7 @@ trait RLRTrait
     {
         return md5(json_encode($this->identifier));
     }
+
     public function isRateLimited()
     {
         $currentTime = time();
@@ -80,17 +80,26 @@ trait RLRTrait
             return true;
         }
 
-        if (!isset($rateData['count'])) {
-            $rateData['count'] = 0;
+        if (!isset($rateData['allowance'])) {
+            $rateData['allowance'] = 0;
         }
 
         if (!isset($rateData['time'])) {
+            $rateData['time'] = 0;
+        }
+        $rateData['allowance'] += (int)(($currentTime - $rateData['time']) * $this->limit / $this->window);
+        $rateData['allowance'] = min($this->limit, $rateData['allowance']);
+
+        if ($rateData['allowance'] < 1) {
+            $rateData['allowance'] = 0;
             $rateData['time'] = $currentTime;
-        } else if (($rateData['time'] > ($currentTime - $this->window)) and $rateData['count'] >= $this->limit) {
+            $this->setValue($key, $rateData);
             return true;
         }
 
-        $rateData['count'] += 1;
+        $rateData['time'] = $currentTime;
+
+        $rateData['allowance'] -= 1;
 
         $this->setValue($key, $rateData);
 

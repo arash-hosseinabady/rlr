@@ -19,7 +19,7 @@ class RLRService
     /**
      * @throws Exception
      */
-    public function __construct($handlerClass = self::HANDLER_MEMCACHED, $limit = 10, $window = 60)
+    public function __construct($handlerClass = self::HANDLER_MEMCACHED, $limit = 10, $window = 60, $banList = [])
     {
         $this->handlerClass = $handlerClass;
         if ($this->handlerClass == self::HANDLER_REDIS) {
@@ -30,5 +30,8 @@ class RLRService
 
         $this->handler->window = $window;
         $this->handler->limit = $limit;
+        $this->handler->banList = $banList;
+
+        $this->handler->__construct();
     }
 }

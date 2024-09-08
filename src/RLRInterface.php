@@ -2,7 +2,7 @@
 
 namespace arash\rlr;
 
-interface RLEInterface
+interface RLRInterface
 {
     public function connect();
     public function isRateLimited();

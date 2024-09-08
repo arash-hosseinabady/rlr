@@ -10,13 +10,13 @@ use Exception;
  * @property string $host
  * @property int $port
  */
-class RedisHandler extends RLRService implements RLEInterface
+class RedisHandler extends RLRService implements RLRInterface
 {
     use RLRTrait;
 
     public $redis;
     private $host = '127.0.0.1';
-    private $port = 63791;
+    private $port = 6379;
 
     public function __construct()
     {

@@ -15,7 +15,7 @@
   - yii:
     - copy this package to the desired directory
     - set blow config in `aliases` section
-      ``'@arash/rlr' => __DIR__ . 'pathToDirectory/arash/rlr/src',``
+      ``'@arash/rlr' => __DIR__ . 'pathToDirectory/rlr/src',``
   - laravel:
     - copy this package to `app/Services`
     - add `"arash\\rlr\\": "app/Services/rlr/src"` in `psr-4` of `autoload` section
@@ -27,10 +27,11 @@ use `RLRService` before the request arrive to action.
 ```php
 use arash\rlr\RLRService;
 
+//default handler is memcache
 $limiter = new RLRService(RLRService::HANDLER_REDIS);
 
 //default is 10 request per 60 seconds.
-//count of request
+//count of request per window
 $limiter->handler->limit = 5;
 //time window
 $limiter->handler->window = 60;
@@ -43,4 +44,20 @@ if ($limiter->handler->isRateLimited()) {
 } else {
     echo 'Request successful.';
 }
+```
+
+#### Yii
+
+Copy `RLRFilter.php` in `app\components` directory and add blow code in `behavior` of your component.
+```php
+$behaviors['rlr'] = [
+    'class' => 'app\components\RLRFilter',
+    'only' => ['array of actions'],
+    'except' => ['array of actions'],
+    'handlerClass' => RLRService::HANDLER_REDIS, //default handler is memcache
+    'limit' => 3, //count of request per window
+    'window' => 15, //time window
+    'message' => 'your message',
+    'banList' => 'list of IPs in array or string that separate with comma'
+];
 ```

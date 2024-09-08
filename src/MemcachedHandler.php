@@ -9,7 +9,7 @@ use Memcached;
  * @property string $host
  * @property int $port
  */
-class MemcachedHandler extends RLRService implements RLEInterface
+class MemcachedHandler extends RLRService implements RLRInterface
 {
     use RLRTrait;
 
